@@ -1,0 +1,22 @@
+{
+  "name": "@control/punchcard",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "exit 0"
+  },
+  "bin": {
+    "punchcard": "./src/cli/cli.js"
+  },
+  "keywords": [],
+  "author": "Jo Colina <jo@jocolina.com>",
+  "license": "MIT",
+  "dependencies": {
+    "argumentate": "^3.0.0",
+    "chalk": "^4.1.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
