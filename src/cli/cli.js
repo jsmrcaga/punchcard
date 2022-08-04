@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+const path = require('path');
+const os = require('os');
+
 const { options, variables } = require('argumentate')({
 	args: process.argv.slice(2),
 	config: {
@@ -55,7 +58,9 @@ const Commands = require('./commands');
 // that way next imports will have the config in cache
 const Config = require('../config/config');
 
-Config.read(options.config || './punchcard.config.js').then((config) => {
+
+const home_config = path.join(os.homedir(), './punchcard.config.js');
+Config.read(options.config || home_config).then((config) => {
 	const DB = require('../data/db');
 	return DB.connect();
 }).then(() => {
