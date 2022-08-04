@@ -9,6 +9,10 @@ class Converter {
 		return from_ms / 1000;
 	}
 
+	static minutes(from_ms) {
+		return this.seconds(from_ms) / 60;
+	}
+
 	static hours(from_ms) {
 		return this.seconds(from_ms) / 3600;
 	}
@@ -20,6 +24,7 @@ class Converter {
 	static convert(time_ms, unit='hours') {
 		const units = {
 			milliseconds: 'ms',
+			m: 'minutes',
 			s: 'seconds',
 			h: 'hours',
 			d: 'days',
