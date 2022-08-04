@@ -2,6 +2,8 @@
 const path = require('path');
 const os = require('os');
 
+const logger = require('../logger/logger');
+
 const { options, variables } = require('argumentate')({
 	args: process.argv.slice(2),
 	config: {
@@ -78,5 +80,9 @@ Config.read(options.config || home_config).then((config) => {
 	commands.apply_listeners(event_listeners);
 
 	const command = variables.shift();
+	if(!command) {
+		return logger.error('No command supplied. Use -h to show help');
+	}
+
 	commands.run(command, { options, variables });
 });
