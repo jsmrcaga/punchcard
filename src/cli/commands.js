@@ -42,7 +42,8 @@ class Commands extends EventEmitter {
 
 	resume({ options: { unit='hours' } }) {
 		return this.manager.resume().then(timeslot => {
-			logger.info(`Timeslot resumed, current time is: ${timeslot.length({ unit, from: Date.now() })} ${unit}`);
+			const length = Converter.convert(timeslot.length({ from: Date.now() }), unit);
+			logger.info(`Timeslot resumed, current time is: ${length} ${unit}`);
 		});
 	}
 
@@ -64,7 +65,11 @@ class Commands extends EventEmitter {
 			return logger.info('No timeslot in progress');
 		}
 
-		return logger.info(`Current timeslot:\n${underline('Started')}: ${logger.format_date(current_timeslot.start_date)}\n${underline('Current length')} (rounded up): ${Math.ceil(current_timeslot.length({ unit, from: Date.now() }))} ${unit}`);
+		const current_length = Math.ceil(
+			Converter.convert(current_timeslot.length({ from: Date.now() }), unit)
+		);
+
+		return logger.info(`Current timeslot:\n${underline('Started')}: ${logger.format_date(current_timeslot.start_date)}\n${underline('Current length')} (rounded up): ${current_length} ${unit}`);
 	}
 
 	length({ options: { from, to, unit='hours', overlap=true, round=true }}) {
