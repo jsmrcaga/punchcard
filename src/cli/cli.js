@@ -54,20 +54,24 @@ const Commands = require('./commands');
 // Let's read the config immediately after requiring the file
 // that way next imports will have the config in cache
 const Config = require('../config/config');
-Config.read(options.config);
 
-const DB = require('../data/db');
-
-DB.connect().then(() => {
+Config.read(options.config || './punchcard.config.js').then((config) => {
+	const DB = require('../data/db');
+	return DB.connect();
+}).then(() => {
 	const { Manager } = require('../models/manager');
 	return Manager.load();
 }, (err) => {
 	console.error(err);
 	process.exit(1);
 }).then(manager => {
-	manager.apply_listeners(Config.event_listeners || {});
+	const { event_listeners = {} } = Config;
+
+	manager.apply_listeners(event_listeners);
 	// Do something CLI related
 	const commands = new Commands(manager);
+	commands.apply_listeners(event_listeners);
+
 	const command = variables.shift();
 	commands.run(command, { options, variables });
 });

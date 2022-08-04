@@ -2,36 +2,16 @@ const Converter = require('../converter/converter');
 const { PunchcardError } = require('./errors');
 const DB = require('../data/db');
 
+const EventEmitter = require('./event-emitter');
 const { Timeslot } = require('./timeslot');
 
-class Manager {
-	#events = {};
-
+class Manager extends EventEmitter {
 	constructor({ timeslots, current_timeslot }) {
+		super();
 		this.timeslots = timeslots;
 		this.current_timeslot = current_timeslot;		
 	}
 
-	// Event methods
-	on(event, cb) {
-		this.#events[event] = this.#events[event] || [];
-		this.#events[event].push(cb);
-	}
-
-	emit(event, data) {
-		const cbs = this.#events[event] || [];
-		for(const cb of cbs) {
-			cb(data);
-		}
-	}
-
-	apply_listeners(event_listeners={}) {
-		for(const [event_name, callbacks] of Object.entries(event_listeners)) {
-			for(const cb of callbacks) {
-				this.on(event_name, cb);
-			}
-		}
-	}
 
 	// Management methods
 	pause() {

@@ -7,8 +7,11 @@ const logger = require('../logger/logger');
 const Converter = require('../converter/converter');
 const { PunchcardError } = require('../models/errors');
 
-class Commands {
+const EventEmitter = require('../models/event-emitter');
+
+class Commands extends EventEmitter {
 	constructor(manager) {
+		super();
 		this.manager = manager;
 	}
 
@@ -101,7 +104,9 @@ class Commands {
 				csv += `\n${timeslot.start_date}, ${timeslot.end_date}, ${paused_time}, ${total_time}, ${unit}`;
 			}
 
-			return fs.writeFile(filename, csv);
+			return fs.writeFile(filename, csv).then(() => csv);
+		}).then((csv) => {
+			this.emit('export', { filename, content: csv });
 		});
 	}
 
@@ -112,7 +117,7 @@ class Commands {
 
 		return this.export({
 			options: {
-				filename: `punchcard-export-month-${this_month.getFullYear()}-${this_month.getMonth() + 1}.csv`,
+				filename: path.join(process.cwd(), `./punchcard-export-month-${this_month.getFullYear()}-${this_month.getMonth() + 1}.csv`),
 				from: this_month,
 				to: new Date(),
 				...options

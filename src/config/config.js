@@ -1,5 +1,6 @@
-const os = require('os');
 const fs = require('fs/promises');
+const os = require('os');
+const path = require('path')
 
 const DEFAULT_CONFIG = {
 	db_filename: './json',
@@ -24,7 +25,7 @@ class Config {
 
 				return obj.config[prop];
 			}
-		})
+		});
 	}
 
 	#apply_config(config) {
@@ -32,6 +33,8 @@ class Config {
 			...DEFAULT_CONFIG,
 			...config
 		};
+
+		return this;
 	}
 
 	read(filename=null) {
@@ -39,10 +42,20 @@ class Config {
 			return this;
 		}
 
-		const config_provider = require(filename);
-		const config = config_provider();
+		const file_path = path.join(process.cwd(), filename);
 
-		this.#apply_config(config);
+		return fs.stat(file_path).then(() => {
+			const config_provider = require(file_path);
+			const config = config_provider();
+			return this.#apply_config(config);
+		}).catch(e => {
+			if(e.code === 'ENOENT') {
+				return this.#apply_config(config);
+			}
+
+			throw e;
+		})
+
 	}
 }
 
