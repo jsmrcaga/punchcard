@@ -74,7 +74,7 @@ class Manager extends EventEmitter {
 				const start = new Date(timeslot.start_date).getTime();
 				const end = new Date(timeslot.end_date).getTime();
 				// This ensures we don't count above or below bounds
-				return Math.min(end - start, end - from, to - start, to - from) + agg;
+				return Math.min(end - start, end - from, to - start, to - from) + agg - timeslot.pause_time_ms;
 			}, 0);
 
 			return Converter.convert(bound_time_ms, unit);

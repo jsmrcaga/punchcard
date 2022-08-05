@@ -49,7 +49,8 @@ class Commands extends EventEmitter {
 
 	end({ options: { unit='hours' } }) {
 		return this.manager.end().then(timeslot => {
-			logger.success(`Ended timeslot at ${timeslot.length({ unit, from: Date.now() })} ${unit}`);
+			const length = Converter.convert(timeslot.length({ from: Date.now() }), unit);
+			logger.success(`Ended timeslot at ${length} ${unit}`);
 		});
 	}
 

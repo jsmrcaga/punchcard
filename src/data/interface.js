@@ -15,7 +15,7 @@ class DatabseInterface {
 		throw new Error(`Method update should be overriden`);
 	}
 
-	get_bounded(from, to) {
+	get_bound(from, to) {
 		throw new Error(`Method get_bounded should be overriden`);
 	}
 
